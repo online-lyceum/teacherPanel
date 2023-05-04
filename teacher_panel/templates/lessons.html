@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for lesson in lessons %}
+        <a href="{{ url_for('lessons.lesson') }}">{{ lesson.name }}</a>
+        <p>
+            Start time: {{ lesson.start_time }}
+            End time: {{ lesson.end_time }}
+            Room: {{ lesson.room }}
+            Teacher: {{ lesson.teacher.name }}
+        </p>
+    {% endfor %}
+{% endblock %}

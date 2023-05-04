@@ -1,26 +1,26 @@
-from flask import Blueprint, render_template, request
-from teacher_panel import db
-from teacher_panel.services.auth import login_user
+from flask import Blueprint, render_template, request, session
+from flask import redirect, url_for
+from teacher_panel.services.auth import login_user, login_check
 
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/login', methods=["POST", "GET"])
+@auth.route('/login', methods=["GET"])
 def login():
-    if request.method == "POST":
-        print(request.form)
-        return render_template('login.html', token=login_user(
-            request.form.get('name'), request.form.get('password')
-        ))
-    return render_template('login.html') 
+    return render_template('login.html')
 
 
-@auth.route('/signup', methods=['POST', 'GET'])
-def signup():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        password = request.form.get('password')
-        
-    else:
-        return render_template('signup.html') 
+@auth.route('/login', methods=["POST"])
+def do_login():
+    session['auth_token'] = login_user(
+        request.form.get('name'), request.form.get('password')
+    )
+    session['user_data'] = {'subgroup_id': 63}
+    return redirect(url_for('auth.profile'))
 
+
+@auth.route('/profile')
+def profile():
+    if login_check(session):
+        return render_template('profile.html', user=session['user_data'])
+    return 'Authorize'
