@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for lesson in lessons %}
-        <a href="{{ url_for('lessons.lesson') }}">{{ lesson.name }}</a>
-        <p>
-            Start time: {{ lesson.start_time }}
-            End time: {{ lesson.end_time }}
-            Room: {{ lesson.room }}
-            Teacher: {{ lesson.teacher.name }}
-        </p>
-    {% endfor %}
+   <h1>Upload new timetable</h1>
+    <form method="POST" enctype=multipart/form-data>
+      <div>
+      <input name="school_id" type="id" placeholder="school id">
+      </div>
+      <div>
+      <input type=file name=file>
+      </div>
+      <input type=submit value=Upload>
+    </form> 
 {% endblock %}

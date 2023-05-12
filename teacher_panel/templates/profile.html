@@ -2,6 +2,9 @@
 
 
 {% block content %}
-    Name: {{ user.name }}
-    Subgroup_id: {{ user.subgroup_id }}
+   {% for key, value in user.items() %}
+	<p>
+	     {{ key }}: {{ value }}
+	</p>
+   {% endfor %}
 {% endblock %}

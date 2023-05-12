@@ -12,13 +12,17 @@ def create_user(login: str, password: str) -> 'Token':
 
 
 def login_user(login: str, password: str) -> 'Token':
-    token = requests.post(API_URL + 'auth/login', json={"name": login, "password": password})
-    token = token.json().get('key')
-    if token:
-        tokens.append(token)
-        return token
+    user_info = requests.post(API_URL + 'auth/login', json={"name": login, "password": password})
+    user_info = user_info.json()
+    if user_info and user_info.get('detail') is None:
+        tokens.append(user_info['token']['key'])
+        return user_info
     abort(401, 'Invalid authorize')
 
 
 def login_check(session, raise_unauth=True):
-    return session.get('auth_token') in tokens
+    if session.get('auth_token') in tokens:
+        return True
+    if raise_unauth:
+        abort(401, 'Invalid authorize')
+    return False

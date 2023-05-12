@@ -12,15 +12,18 @@ def login():
 
 @auth.route('/login', methods=["POST"])
 def do_login():
-    session['auth_token'] = login_user(
+    data = login_user(
         request.form.get('name'), request.form.get('password')
     )
-    session['user_data'] = {'subgroup_id': 63}
-    return redirect(url_for('auth.profile'))
+    if data:
+        session['user_data'] = data
+        session['auth_token'] = session['user_data'].pop('token')['key']
+        return redirect(url_for('auth.profile'))
+    abort(401, "Unauthorized")
 
 
 @auth.route('/profile')
 def profile():
     if login_check(session):
-        return render_template('profile.html', user=session['user_data'])
+        return render_template('profile.html', user=session.get('user_data'))
     return 'Authorize'
